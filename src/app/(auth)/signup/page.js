@@ -1,30 +1,40 @@
+"use client";
+import { onSubmit } from "@/utils/actions";
 import { Button, TextField } from "@mui/material";
-import Image from "next/image";
 import Link from "next/link";
+import { useActionState } from "react";
 
 export default function Home() {
-  async function onSubmit(formData) {
-    "use server";
-    console.log("checlk form", formData);
+  const [state, formAction, isPending] = useActionState(onSubmit, {
+    error: {},
+    values:{
+      fName:"",
+      lName:"",
+      email:"",
+      pass:"",
+      user:""
+    }
+  });
 
-    const fName = formData.get("fName");
-    console.log("checlk e", fName);
-  }
+  console.log("check state" , state , isPending)
 
   return (
-    <div className="flex flex-col gap-8">
-      <form action={onSubmit}>
+    <form action={formAction}>
+      <div className="flex flex-col gap-8">
         <div>
           <div>
             {" "}
             <TextField
-              required
+              // required
               type="text"
               id="standard-basic"
               name="fName"
               label="First Name"
               variant="standard"
             />
+           {
+            state?.errors?.fName && <p className="text-red-600 text-[12px]">{state?.errors?.fName}</p>
+           }
           </div>
           <div>
             {" "}
@@ -35,21 +45,25 @@ export default function Home() {
               label="Last Name"
               variant="standard"
             />
+            
           </div>
           <div>
             {" "}
             <TextField
-              required
+              // required
               id="standard-basic"
               type="text"
               name="email"
               label="Email"
               variant="standard"
             />
+            {
+            state?.errors?.email && <p className="text-red-600 text-[12px]">{state?.errors?.email}</p>
+           }
           </div>
           <div>
             <TextField
-              required
+              // required
               id="standard-password-input"
               name="pass"
               label="Create Password"
@@ -57,19 +71,30 @@ export default function Home() {
               autoComplete="current-password"
               variant="standard"
             />
+            {
+            state?.errors?.pass && <p className="text-red-600 text-[12px]">{state?.errors?.pass}</p>
+           }
           </div>
         </div>
 
         <div>
           <div className="flex flex-col gap-1">
             <div>
-              <Button type="submit" className="w-[100%]" variant="contained">
+              <Button
+                disabled={isPending}
+                type="submit"
+                className="w-[100%]"
+                variant="contained"
+              >
                 Sign Up
               </Button>
+              {
+                state.errors?.user &&  <p className="text-red-600 text-[12px]">{state?.errors?.user}</p>
+              }
             </div>
             <div className="text-center text-[12px]">Or</div>
 
-            {/* <div>
+            <div>
               <Button
                 component={Link}
                 href="/login"
@@ -78,10 +103,10 @@ export default function Home() {
               >
                 Login
               </Button>
-            </div> */}
+            </div>
           </div>
         </div>
-      </form>
-    </div>
+      </div>
+    </form>
   );
 }
