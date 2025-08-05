@@ -1,28 +1,27 @@
-"use client"
 import { Button, TextField } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Home() {
+  async function onSubmit(formData) {
+    "use server";
+    console.log("checlk form", formData);
 
-
-    const onSubmit =(e)=>{
-        debugger
-        e.preventDefault();
-        console.log("checlk e",e)
-    }
-
+    const fName = formData.get("fName");
+    console.log("checlk e", fName);
+  }
 
   return (
     <div className="flex flex-col gap-8">
-      <form onSubmit={onSubmit}>
+      <form action={onSubmit}>
         <div>
           <div>
             {" "}
             <TextField
               required
+              type="text"
               id="standard-basic"
-              name = "fName"
+              name="fName"
               label="First Name"
               variant="standard"
             />
@@ -31,7 +30,8 @@ export default function Home() {
             {" "}
             <TextField
               id="standard-basic"
-              name = "LName"
+              type="text"
+              name="lName"
               label="Last Name"
               variant="standard"
             />
@@ -41,7 +41,8 @@ export default function Home() {
             <TextField
               required
               id="standard-basic"
-              name = "email"
+              type="text"
+              name="email"
               label="Email"
               variant="standard"
             />
@@ -50,7 +51,7 @@ export default function Home() {
             <TextField
               required
               id="standard-password-input"
-              name = "pass"
+              name="pass"
               label="Create Password"
               type="password"
               autoComplete="current-password"
@@ -68,7 +69,7 @@ export default function Home() {
             </div>
             <div className="text-center text-[12px]">Or</div>
 
-            <div>
+            {/* <div>
               <Button
                 component={Link}
                 href="/login"
@@ -77,7 +78,7 @@ export default function Home() {
               >
                 Login
               </Button>
-            </div>
+            </div> */}
           </div>
         </div>
       </form>
