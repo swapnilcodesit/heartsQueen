@@ -6,7 +6,9 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 //import { database } from '../lib/firebase';
-import { ref, push, set, get, update } from 'firebase/database';
+import { ref, push, set, get, update } from "firebase/database";
+import { Button } from "@mui/material";
+import Link from "next/link";
 
 const Welcome = () => {
   const [userDetails, setUserDetails] = useState({
@@ -41,33 +43,33 @@ const Welcome = () => {
     fetchuser();
   }, []);
 
-  const [playerName, setPlayerName] = useState('');
-  const [roomId, setRoomId] = useState('');
+  const [playerName, setPlayerName] = useState("");
+  const [roomId, setRoomId] = useState("");
   const [joinedRoomData, setJoinedRoomData] = useState(null);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   // Create a new room
   const handleCreateRoom = async () => {
-    if (!playerName) return alert('Enter your name');
+    if (!playerName) return alert("Enter your name");
 
-    const roomsRef = ref(database, 'rooms');
+    const roomsRef = ref(database, "rooms");
     const newRoomRef = push(roomsRef); // unique ID
 
     await set(newRoomRef, {
       players: {
-        host: { name: playerName }
+        host: { name: playerName },
       },
-      gameState: 'waiting'
+      gameState: "waiting",
     });
 
     setRoomId(newRoomRef.key);
     setJoinedRoomData({ roomId: newRoomRef.key, host: playerName });
-    setError('');
+    setError("");
   };
 
   // Join an existing room
   const handleJoinRoom = async () => {
-    if (!playerName || !roomId) return alert('Enter your name and room ID');
+    if (!playerName || !roomId) return alert("Enter your name and room ID");
 
     const roomRef = ref(database, `rooms/${roomId}`);
     const snapshot = await get(roomRef);
@@ -75,12 +77,12 @@ const Welcome = () => {
     if (snapshot.exists()) {
       const timestamp = Date.now().toString();
       await update(roomRef, {
-        [`players/${timestamp}`]: { name: playerName }
+        [`players/${timestamp}`]: { name: playerName },
       });
       setJoinedRoomData({ roomId, player: playerName });
-      setError('');
+      setError("");
     } else {
-      setError('Room not found');
+      setError("Room not found");
     }
   };
 
@@ -101,50 +103,62 @@ const Welcome = () => {
           I already have a room id?
           <br />
           Create Room And Play
+          <div style={{ padding: 20 }}>
+            <h1> Game Room Lobby</h1>
 
+            <input
+              type="text"
+              placeholder="Your Name"
+              value={playerName}
+              onChange={(e) => setPlayerName(e.target.value)}
+              style={{ marginBottom: 10, display: "block" }}
+            />
 
-           <div style={{ padding: 20 }}>
-      <h1> Game Room Lobby</h1>
+            <button onClick={handleCreateRoom}>Create Room</button>
 
-      <input
-        type="text"
-        placeholder="Your Name"
-        value={playerName}
-        onChange={(e) => setPlayerName(e.target.value)}
-        style={{ marginBottom: 10, display: 'block' }}
-      />
+            <hr style={{ margin: "20px 0" }} />
 
-      <button onClick={handleCreateRoom}>Create Room</button>
+            <input
+              type="text"
+              placeholder="Room ID"
+              value={roomId}
+              onChange={(e) => setRoomId(e.target.value)}
+              style={{ marginBottom: 10, display: "block" }}
+            />
 
-      <hr style={{ margin: '20px 0' }} />
+            <button onClick={handleJoinRoom}>Join Room</button>
 
-      <input
-        type="text"
-        placeholder="Room ID"
-        value={roomId}
-        onChange={(e) => setRoomId(e.target.value)}
-        style={{ marginBottom: 10, display: 'block' }}
-      />
+            {error && <p style={{ color: "red" }}>{error}</p>}
 
-      <button onClick={handleJoinRoom}>Join Room</button>
-
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-
-      {joinedRoomData && (
-        <div style={{ marginTop: 20 }}>
-          <h3>✅ Joined Room</h3>
-          <p><strong>Room ID:</strong> {joinedRoomData.roomId}</p>
-          <p><strong>Your Name:</strong> {playerName}</p>
-        </div>
-      )}
-    </div>
+            {joinedRoomData && (
+              <div style={{ marginTop: 20 }}>
+                <h3>✅ Joined Room</h3>
+                <p>
+                  <strong>Room ID:</strong> {joinedRoomData.roomId}
+                </p>
+                <p>
+                  <strong>Your Name:</strong> {playerName}
+                </p>
+              </div>
+            )}
+          </div>
         </div>
       </>
     );
   } else {
     return (
       <>
-        <div>Hi Player , play with computer</div>
+        <div>Hi Player </div>
+        <div>
+          <Button
+            component={Link}
+            href="/login"
+            className="w-[100%]"
+            variant="contained"
+          >
+            Go to Login
+          </Button>
+        </div>
       </>
     );
   }
