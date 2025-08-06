@@ -1,10 +1,6 @@
 "use server";
 
-import { auth } from "@/lib/firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-
 export async function onSubmit(prevState, formData) {
-  debugger;
   const fName = formData.get("fName");
   const lName = formData.get("lName");
   const email = formData.get("email");
@@ -17,19 +13,39 @@ export async function onSubmit(prevState, formData) {
   if (!pass) errors.pass = "Password is Required";
 
   if (Object.keys(errors).length) {
-    return { errors };
+    return {
+      error: errors,
+      values: {
+        user: null,
+        fName,
+        lName,
+        email,
+        pass,
+      },
+    };
   } else {
-    try {
-      await createUserWithEmailAndPassword(auth, email, pass);
-      const user = auth.currentUser;
-      return {
-        errors: {},
-        values: { user },
-      };
-    } catch {
-      return {
-        errors: { user: "Login Faild" },
-      };
-    }
+    return {
+      error: {},
+      values: { user: "Hi", fName, lName, email, pass },
+    };
+  }
+}
+
+export async function login(prevState, formData) {
+  const email = formData.get("email");
+  const pass = formData.get("pass");
+
+  const errors = {};
+
+  if (!email) errors.email = "Email is Required";
+  if (!pass) errors.pass = "Password is Required";
+
+  if (Object.keys(errors).length) {
+    return { error: errors  , values:{email , pass}};
+  } else {
+    return {
+      error: {},
+      values: { email, pass },
+    };
   }
 }

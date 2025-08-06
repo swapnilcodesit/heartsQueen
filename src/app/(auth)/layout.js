@@ -24,17 +24,18 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <div>
-      <div className="">
-        <div className="h-[100vh] bg-red-300 flex flex-col gap-[15%] items-center pt-[21%]">
-          <div>
-            <Title/>
-          </div>
+          <div className="">
+            <div className="h-[100vh] bg-red-300 flex flex-col gap-[15%] items-center pt-16">
+              <div className="bg-white w-72 p-5  rounded-2xl flex flex-col gap-8 items-center pb-8 pt-12">
+                <div>
+                  <Title />
+                </div>
 
-          {children}
+                {children}
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-       
       </body>
     </html>
   );
