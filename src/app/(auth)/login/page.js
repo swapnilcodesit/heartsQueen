@@ -24,7 +24,7 @@ export default function Home() {
     const { email, pass } = values;
     try {
       await signInWithEmailAndPassword(auth, email, pass);
-      router.push("/game");
+      router.push("/");
     } catch {
       setLoginState("Invalid Email or password");
     }
@@ -80,7 +80,7 @@ export default function Home() {
           <div>
             <div className="flex flex-col gap-1">
               <div>
-                <Button type="submit" className="w-[100%]" variant="contained">
+                <Button type="submit" className="w-[100%]" variant="contained" disabled={isPending} loading={isPending}>
                   Login
                 </Button>
                 <div className="text-[12px] text-center">
@@ -101,7 +101,7 @@ export default function Home() {
               </div>
               <div className="text-center text-[12px]">Or</div>
               <div>
-                <Button disabled={isPending} loading={isPending} className="w-[100%]" variant="contained">
+                <Button  className="w-[100%]" variant="contained">
                   Play as Guest
                 </Button>
               </div>
