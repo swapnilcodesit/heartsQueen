@@ -19,7 +19,17 @@ const Welcome = () => {
 
   async function fetchuser() {
     auth.onAuthStateChanged(async (user) => {
-      const docRef = doc(db, "Users", user.uid);
+      debugger;
+      if (!user) {
+        setUserDetails({
+          uid: null,
+          isFetching: false,
+          error: "user not found",
+        });
+        return;
+      }
+
+      const docRef = doc(db, "Users", user?.uid);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         setUserDetails({
@@ -69,7 +79,7 @@ const Welcome = () => {
 
   // Join an existing room
   const handleJoinRoom = async () => {
-    if ( !roomId) return alert("Enter your name and room ID");
+    if (!roomId) return alert("Enter your name and room ID");
 
     const roomRef = ref(database, `rooms/${roomId}`);
     const snapshot = await get(roomRef);
@@ -88,16 +98,13 @@ const Welcome = () => {
 
   console.log("check user details", userDetails);
 
-
   async function handleLogout() {
     try {
-      await auth.signOut()
+      await auth.signOut();
       router.push("/login");
+    } catch {
+      console.log("failed to logout");
     }
-    catch{
-      console.log("failed to logout")
-    }
-    
   }
 
   if (userDetails.isFetching)
@@ -118,8 +125,6 @@ const Welcome = () => {
           <button onClick={handleLogout}>Logout</button>
           <div style={{ padding: 20 }}>
             <h1> Game Room Lobby</h1>
-
-            
 
             <button onClick={handleCreateRoom}>Create Room</button>
 
